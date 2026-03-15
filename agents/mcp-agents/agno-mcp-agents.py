@@ -12,20 +12,20 @@ mcp_tools = MCPTools(
 )
 
 # Create an MCP-enabled agent
-agent = Agent(
+agno_mcp_agents = Agent(
     id="agno-agent",
     name="Agno Agent",
     tools=[mcp_tools],
 )
 
-# AgentOS manages MCP lifespan
-agent_os = AgentOS(
-    description="AgentOS with MCP Tools",
-    agents=[agent],
-)
-
-app = agent_os.get_app()
 
 if __name__ == "__main__":
+    # AgentOS manages MCP lifespan
+    agent_os = AgentOS(
+        description="AgentOS with MCP Tools",
+        agents=[agno_mcp_agents],
+    )
+
+    app = agent_os.get_app()
     # Don't use reload=True with MCP tools to avoid lifespan issues
     agent_os.serve(app="mcp_tools_example:app")
