@@ -18,7 +18,7 @@ agno_mcp_agents = Agent(
     id="agno-agent",
     name="Agno Agent",
     model=Claude(id="claude-sonnet-4-5"),
-    instructions=["You are a helpful assistant."],
+    instructions=["You are a helpful agno mcp agent assistant."],
     tools=[agno_mcp_tools],
     markdown=True,
 )
