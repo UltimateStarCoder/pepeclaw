@@ -9,7 +9,8 @@ load_dotenv()
 # Create an MCPTools instance
 agno_mcp_tools = MCPTools(
     transport="streamable-http",
-    url="https://docs.agno.com/mcp"
+    url="https://docs.agno.com/mcp",
+    add_instructions=True,
 )
 
 # Create an MCP-enabled agent
