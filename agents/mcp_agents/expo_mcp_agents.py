@@ -3,14 +3,16 @@ from agno.models.anthropic import Claude
 from agno.os import AgentOS
 from dotenv import load_dotenv
 
-from tools import create_dynamic_mcp_tools
+from tools import create_oauth_mcp_tools
 
 load_dotenv()
 
-# Expo MCP requires auth — use dynamic auth for multi-user support
-expo_mcp_tools = create_dynamic_mcp_tools(
+# Expo MCP requires OAuth — authenticates via browser on first use,
+# then caches token to ~/.pepeclaw/tokens/expo/
+expo_mcp_tools = create_oauth_mcp_tools(
     url="https://mcp.expo.dev/mcp",
-    token_metadata_key="expo_token",
+    cache_key="expo",
+    client_name="Pepeclaw",
 )
 
 # Create an Expo MCP-enabled agent
