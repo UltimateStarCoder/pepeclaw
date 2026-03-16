@@ -9,7 +9,7 @@ from rich.table import Table
 
 app = typer.Typer(
     name="pepeclaw",
-    help="Pepeclaw — Multi-agent system powered by Agno and MCP.",
+    help="Pepeclaw — Multi-agent system powered by Agno and MCP. Config: ~/.pepeclaw/.env",
     no_args_is_help=True,
 )
 auth_app = typer.Typer(help="Manage OAuth authentication tokens.")
@@ -43,7 +43,27 @@ TEAMS = {
     "fullstack": "teams.fullstack_team:fullstack_team",
 }
 
-TOKEN_CACHE_DIR = Path.home() / ".pepeclaw" / "tokens"
+PEPECLAW_HOME = Path.home() / ".pepeclaw"
+TOKEN_CACHE_DIR = PEPECLAW_HOME / "tokens"
+GLOBAL_ENV_FILE = PEPECLAW_HOME / ".env"
+
+ENV_TEMPLATE = """\
+# Pepeclaw Configuration
+# ─────────────────────────────────────────────────────────────────
+# This file is loaded automatically by pepeclaw.
+# Set your API keys here to use them from anywhere.
+
+# Anthropic (required)
+ANTHROPIC_API_KEY=
+
+# OpenAI (optional)
+OPENAI_API_KEY=
+
+# Google Vertex AI (optional)
+# GOOGLE_GENAI_USE_VERTEXAI=true
+# GOOGLE_CLOUD_PROJECT=your-project-id
+# GOOGLE_CLOUD_LOCATION=us-central1
+"""
 
 
 def _load(path: str):
@@ -52,6 +72,27 @@ def _load(path: str):
     import importlib
     module = importlib.import_module(module_path)
     return getattr(module, attr_name)
+
+
+# ─────────────────────────────────────────────────────────────────
+# pepeclaw init
+# ─────────────────────────────────────────────────────────────────
+
+@app.command()
+def init():
+    """Set up pepeclaw config at ~/.pepeclaw/.env with your API keys."""
+    PEPECLAW_HOME.mkdir(parents=True, exist_ok=True)
+
+    if GLOBAL_ENV_FILE.exists():
+        console.print(f"[yellow]Config already exists at {GLOBAL_ENV_FILE}[/yellow]")
+        overwrite = typer.confirm("Overwrite?", default=False)
+        if not overwrite:
+            console.print("[dim]Skipped.[/dim]")
+            raise typer.Exit()
+
+    GLOBAL_ENV_FILE.write_text(ENV_TEMPLATE)
+    console.print(f"\n[green]Created config at {GLOBAL_ENV_FILE}[/green]")
+    console.print("[dim]Edit the file to add your API keys, then run pepeclaw serve.[/dim]\n")
 
 
 # ─────────────────────────────────────────────────────────────────

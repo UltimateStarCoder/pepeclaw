@@ -45,11 +45,20 @@ pepeclaw/
 ```bash
 # Install dependencies
 uv sync
+
+# Generate config file with API key template
+pepeclaw init
 ```
+
+This creates `~/.pepeclaw/.env` — edit it to add your API keys. This file is loaded automatically so you can run `pepeclaw` from anywhere.
 
 ### Environment Variables
 
-Create a `.env` file with your API keys:
+pepeclaw looks for API keys in this order:
+
+1. **Local `.env`** — in the current working directory
+2. **Global `~/.pepeclaw/.env`** — created by `pepeclaw init`
+3. **Shell environment** — exported variables
 
 ```
 # Required
@@ -59,14 +68,17 @@ ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 
 # Google Vertex AI (for Gemini models)
-GOOGLE_GENAI_USE_VERTEXAI=true
-GOOGLE_CLOUD_PROJECT=your-project-id
-GOOGLE_CLOUD_LOCATION=us-central1
+# GOOGLE_GENAI_USE_VERTEXAI=true
+# GOOGLE_CLOUD_PROJECT=your-project-id
+# GOOGLE_CLOUD_LOCATION=us-central1
 ```
 
 ## CLI
 
 ```bash
+# First-time setup
+pepeclaw init
+
 # Start AgentOS server
 pepeclaw serve
 pepeclaw serve --port 8000

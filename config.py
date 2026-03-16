@@ -1,6 +1,10 @@
+from pathlib import Path
+
 from dotenv import load_dotenv
 
+# Load env vars: local .env first, then global ~/.pepeclaw/.env as fallback
 load_dotenv()
+load_dotenv(Path.home() / ".pepeclaw" / ".env")
 
 from agno.db.sqlite import SqliteDb
 from agno.memory import MemoryManager
