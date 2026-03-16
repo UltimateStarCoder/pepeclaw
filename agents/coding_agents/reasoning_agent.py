@@ -1,16 +1,15 @@
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 from agno.tools.reasoning import ReasoningTools
 from dotenv import load_dotenv
 
-from config import db, memory_manager
+from config import db, memory_manager, reasoning_model
 
 load_dotenv()
 
 reasoning_agent = Agent(
     id="reasoning-agent",
     name="Reasoning Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=reasoning_model,
     instructions=[
         "You are a reasoning and debugging assistant.",
         "Break down complex problems into steps.",

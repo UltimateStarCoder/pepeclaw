@@ -1,16 +1,15 @@
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 from agno.tools.file import FileTools
 from dotenv import load_dotenv
 
-from config import db, memory_manager
+from config import db, default_model, memory_manager
 
 load_dotenv()
 
 file_agent = Agent(
     id="file-agent",
     name="File Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=default_model,
     instructions=["You are a file management assistant. Read, write, search, and organize files."],
     tools=[
         FileTools(

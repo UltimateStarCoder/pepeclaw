@@ -1,8 +1,7 @@
-from agno.models.anthropic import Claude
 from agno.team import Team
 
 from agents.coding_agents.coding_agent import coding_agent
-from config import db
+from config import db, reasoning_model
 from agents.coding_agents.file_agent import file_agent
 from agents.coding_agents.filegen_agent import filegen_agent
 from agents.coding_agents.python_agent import python_agent
@@ -18,7 +17,7 @@ fullstack_team = Team(
     id="fullstack-team",
     name="Full Stack Team",
     description="A team of all agents orchestrated to handle any task.",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=reasoning_model,
     members=[
         # Coding agents
         coding_agent,

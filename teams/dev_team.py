@@ -1,8 +1,7 @@
-from agno.models.anthropic import Claude
 from agno.team import Team
 
 from agents.coding_agents.coding_agent import coding_agent
-from config import db
+from config import db, reasoning_model
 from agents.coding_agents.file_agent import file_agent
 from agents.coding_agents.python_agent import python_agent
 from agents.coding_agents.reasoning_agent import reasoning_agent
@@ -12,7 +11,7 @@ dev_team = Team(
     id="dev-team",
     name="Dev Team",
     description="A team that builds and debugs code.",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=reasoning_model,
     members=[coding_agent, python_agent, shell_agent, file_agent, reasoning_agent],
     instructions=[
         "You are the lead developer of a coding team.",

@@ -1,9 +1,8 @@
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 from agno.tools.mcp import MCPTools
 from dotenv import load_dotenv
 
-from config import db, memory_manager
+from config import db, default_model, memory_manager
 
 load_dotenv()
 
@@ -16,7 +15,7 @@ agno_mcp_tools = MCPTools(
 agno_mcp_agents = Agent(
     id="agno-agent",
     name="Agno Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=default_model,
     instructions=["You are a helpful agno mcp agent assistant."],
     tools=[agno_mcp_tools],
     db=db,

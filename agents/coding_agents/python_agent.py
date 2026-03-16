@@ -1,18 +1,17 @@
 from pathlib import Path
 
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 from agno.tools.python import PythonTools
 from dotenv import load_dotenv
 
-from config import db, memory_manager
+from config import db, default_model, memory_manager
 
 load_dotenv()
 
 python_agent = Agent(
     id="python-agent",
     name="Python Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=default_model,
     instructions=["You are a Python coding assistant. Write and execute Python code to solve problems."],
     tools=[
         PythonTools(

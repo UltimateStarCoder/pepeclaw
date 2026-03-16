@@ -1,8 +1,7 @@
-from agno.models.anthropic import Claude
 from agno.team import Team
 
 from agents.coding_agents.shell_agent import shell_agent
-from config import db
+from config import db, reasoning_model
 from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
 from agents.mcp_agents.expo_mcp_agents import expo_mcp_agents
 
@@ -10,7 +9,7 @@ deploy_team = Team(
     id="deploy-team",
     name="Deploy Team",
     description="A team that deploys and manages applications.",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=reasoning_model,
     members=[shell_agent, expo_mcp_agents, convex_mcp_agents],
     instructions=[
         "You are the lead of a deployment team.",

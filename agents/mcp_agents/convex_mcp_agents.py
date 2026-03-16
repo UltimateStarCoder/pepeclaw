@@ -1,9 +1,8 @@
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 from agno.tools.mcp import MCPTools
 from dotenv import load_dotenv
 
-from config import db, memory_manager
+from config import db, default_model, memory_manager
 
 load_dotenv()
 
@@ -15,7 +14,7 @@ convex_mcp_tools = MCPTools(
 convex_mcp_agents = Agent(
     id="convex-agent",
     name="Convex Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=default_model,
     instructions=["You are a helpful Convex MCP agent assistant."],
     tools=[convex_mcp_tools],
     db=db,

@@ -1,16 +1,15 @@
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 from agno.tools.coding import CodingTools
 from dotenv import load_dotenv
 
-from config import db, memory_manager
+from config import db, default_model, memory_manager
 
 load_dotenv()
 
 coding_agent = Agent(
     id="coding-agent",
     name="Coding Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=default_model,
     instructions=["You are a coding assistant. Read, write, edit files and run shell commands to solve coding tasks."],
     tools=[CodingTools()],
     db=db,

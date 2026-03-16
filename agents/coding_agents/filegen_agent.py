@@ -1,18 +1,17 @@
 from pathlib import Path
 
 from agno.agent import Agent
-from agno.models.anthropic import Claude
 from agno.tools.file_generation import FileGenerationTools
 from dotenv import load_dotenv
 
-from config import db, memory_manager
+from config import db, flash_model, memory_manager
 
 load_dotenv()
 
 filegen_agent = Agent(
     id="filegen-agent",
     name="File Generation Agent",
-    model=Claude(id="claude-sonnet-4-5"),
+    model=flash_model,
     instructions=[
         "You are a file generation assistant.",
         "Create files in various formats when requested.",
