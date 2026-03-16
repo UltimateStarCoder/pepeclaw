@@ -2,7 +2,7 @@ from agno.agent import Agent
 from agno.models.anthropic import Claude
 from dotenv import load_dotenv
 
-from tools import create_oauth_mcp_tools
+from tools.auth import create_oauth_mcp_tools
 
 load_dotenv()
 
