@@ -1,8 +1,9 @@
 [project]
 name = "pepeclaw"
 version = "0.1.0"
-description = "Add your description here"
+description = "Multi-agent system powered by Agno and MCP."
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
     "agno[os]>=2.5.9",
