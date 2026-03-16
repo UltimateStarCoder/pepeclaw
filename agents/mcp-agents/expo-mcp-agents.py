@@ -1,16 +1,16 @@
 from agno.agent import Agent
 from agno.models.anthropic import Claude
 from agno.os import AgentOS
-from agno.tools.mcp import MCPTools
 from dotenv import load_dotenv
+
+from tools import create_dynamic_mcp_tools
 
 load_dotenv()
 
-# Create an MCPTools instance for Expo
-expo_mcp_tools = MCPTools(
-    transport="streamable-http",
+# Expo MCP requires auth — use dynamic auth for multi-user support
+expo_mcp_tools = create_dynamic_mcp_tools(
     url="https://mcp.expo.dev/mcp",
-    add_instructions=True,
+    token_metadata_key="expo_token",
 )
 
 # Create an Expo MCP-enabled agent

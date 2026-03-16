@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Create an MCPTools instance
+# Agno MCP is a public endpoint — no auth needed
 agno_mcp_tools = MCPTools(
     transport="streamable-http",
     url="https://docs.agno.com/mcp",
