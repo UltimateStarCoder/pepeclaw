@@ -16,8 +16,8 @@ reasoning_agent = Agent(
     ],
     tools=[
         ReasoningTools(
-            think=True,
-            analyze=True,
+            enable_think=True,
+            enable_analyze=True,
             add_instructions=True,
             add_few_shot=True,
         ),
