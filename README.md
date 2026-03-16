@@ -40,12 +40,25 @@ pepeclaw/
 └── .env                            # API keys (not committed)
 ```
 
+## Installation
+
+### From GitHub
+
+```bash
+uv pip install git+https://github.com/UltimateStarCoder/pepeclaw.git
+```
+
+### From source
+
+```bash
+git clone https://github.com/UltimateStarCoder/pepeclaw.git
+cd pepeclaw
+uv sync
+```
+
 ## Setup
 
 ```bash
-# Install dependencies
-uv sync
-
 # Generate config file with API key template
 pepeclaw init
 ```
