@@ -277,6 +277,47 @@ def auth_status():
 
 
 # ─────────────────────────────────────────────────────────────────
+# pepeclaw reset
+# ─────────────────────────────────────────────────────────────────
+
+@app.command()
+def reset(
+    memory: bool = typer.Option(False, "--memory", "-m", help="Clear agent memory database."),
+    tokens: bool = typer.Option(False, "--tokens", "-t", help="Clear cached OAuth tokens."),
+    generated: bool = typer.Option(False, "--generated", "-g", help="Clear generated files."),
+    all_: bool = typer.Option(False, "--all", "-a", help="Clear everything."),
+):
+    """Clear memory, tokens, and/or generated files."""
+    if not any([memory, tokens, generated, all_]):
+        console.print("[yellow]Specify what to reset: --memory, --tokens, --generated, or --all[/yellow]")
+        raise typer.Exit(1)
+
+    if all_ or memory:
+        db_path = Path("tmp/pepeclaw.db")
+        if db_path.exists():
+            db_path.unlink()
+            console.print("[green]Cleared agent memory database.[/green]")
+        else:
+            console.print("[yellow]No memory database found.[/yellow]")
+
+    if all_ or tokens:
+        if TOKEN_CACHE_DIR.exists():
+            shutil.rmtree(TOKEN_CACHE_DIR)
+            console.print("[green]Cleared all OAuth tokens.[/green]")
+        else:
+            console.print("[yellow]No cached tokens found.[/yellow]")
+
+    if all_ or generated:
+        gen_path = Path("tmp/generated")
+        if gen_path.exists():
+            shutil.rmtree(gen_path)
+            gen_path.mkdir(parents=True)
+            console.print("[green]Cleared generated files.[/green]")
+        else:
+            console.print("[yellow]No generated files found.[/yellow]")
+
+
+# ─────────────────────────────────────────────────────────────────
 # Entry point
 # ─────────────────────────────────────────────────────────────────
 
