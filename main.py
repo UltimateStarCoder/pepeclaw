@@ -1,6 +1,9 @@
 from agno.os import AgentOS
 from dotenv import load_dotenv
 
+from agents.coding_agents.file_agent import file_agent
+from agents.coding_agents.python_agent import python_agent
+from agents.coding_agents.shell_agent import shell_agent
 from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
 from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
 from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
@@ -10,7 +13,17 @@ load_dotenv()
 
 agent_os = AgentOS(
     description="Pepeclaw AgentOS",
-    agents=[agno_mcp_agents, clerk_mcp_agents, convex_mcp_agents, expo_mcp_agents],
+    agents=[
+        # Coding agents
+        python_agent,
+        shell_agent,
+        file_agent,
+        # MCP agents
+        agno_mcp_agents,
+        clerk_mcp_agents,
+        convex_mcp_agents,
+        expo_mcp_agents,
+    ],
 )
 
 app = agent_os.get_app()
