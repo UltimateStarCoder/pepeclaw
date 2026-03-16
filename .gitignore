@@ -25,9 +25,20 @@ Thumbs.db
 
 # Environment variables
 .env
-.env
+.env.*
 
 # Testing / Coverage
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Pepeclaw
+tmp/
+~/.pepeclaw/
+
+# OAuth token cache
+.pepeclaw/
+
+# Google Cloud credentials
+*.json
+!pyproject.toml
