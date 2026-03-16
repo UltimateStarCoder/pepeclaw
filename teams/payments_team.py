@@ -2,6 +2,7 @@ from agno.models.anthropic import Claude
 from agno.team import Team
 
 from agents.coding_agents.filegen_agent import filegen_agent
+from config import db
 from agents.mcp_agents.stripe_mcp_agents import stripe_mcp_agents
 
 payments_team = Team(
@@ -17,4 +18,5 @@ payments_team = Team(
     ],
     show_members_responses=True,
     markdown=True,
+    db=db,
 )

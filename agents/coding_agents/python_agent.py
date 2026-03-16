@@ -5,6 +5,8 @@ from agno.models.anthropic import Claude
 from agno.tools.python import PythonTools
 from dotenv import load_dotenv
 
+from config import db, memory_manager
+
 load_dotenv()
 
 python_agent = Agent(
@@ -18,5 +20,10 @@ python_agent = Agent(
             exclude_tools=["pip_install_package", "uv_pip_install_package"],
         ),
     ],
+    db=db,
+    memory_manager=memory_manager,
+    enable_agentic_memory=True,
+    add_history_to_context=True,
+    update_memory_on_run=True,
     markdown=True,
 )

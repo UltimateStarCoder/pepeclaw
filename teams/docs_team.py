@@ -2,6 +2,7 @@ from agno.models.anthropic import Claude
 from agno.team import Team
 
 from agents.coding_agents.reasoning_agent import reasoning_agent
+from config import db
 from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
 from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
 
@@ -19,4 +20,5 @@ docs_team = Team(
     ],
     show_members_responses=True,
     markdown=True,
+    db=db,
 )

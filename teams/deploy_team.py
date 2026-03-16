@@ -2,6 +2,7 @@ from agno.models.anthropic import Claude
 from agno.team import Team
 
 from agents.coding_agents.shell_agent import shell_agent
+from config import db
 from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
 from agents.mcp_agents.expo_mcp_agents import expo_mcp_agents
 
@@ -19,4 +20,5 @@ deploy_team = Team(
     ],
     show_members_responses=True,
     markdown=True,
+    db=db,
 )

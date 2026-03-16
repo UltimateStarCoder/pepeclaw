@@ -3,6 +3,8 @@ from agno.models.anthropic import Claude
 from agno.tools.mcp import MCPTools
 from dotenv import load_dotenv
 
+from config import db, memory_manager
+
 load_dotenv()
 
 agno_mcp_tools = MCPTools(
@@ -17,5 +19,10 @@ agno_mcp_agents = Agent(
     model=Claude(id="claude-sonnet-4-5"),
     instructions=["You are a helpful agno mcp agent assistant."],
     tools=[agno_mcp_tools],
+    db=db,
+    memory_manager=memory_manager,
+    enable_agentic_memory=True,
+    add_history_to_context=True,
+    update_memory_on_run=True,
     markdown=True,
 )

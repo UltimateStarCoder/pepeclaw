@@ -5,6 +5,8 @@ from agno.models.anthropic import Claude
 from agno.tools.file_generation import FileGenerationTools
 from dotenv import load_dotenv
 
+from config import db, memory_manager
+
 load_dotenv()
 
 filegen_agent = Agent(
@@ -17,5 +19,10 @@ filegen_agent = Agent(
         "Provide meaningful content and appropriate filenames.",
     ],
     tools=[FileGenerationTools(output_directory=Path("tmp/generated"))],
+    db=db,
+    memory_manager=memory_manager,
+    enable_agentic_memory=True,
+    add_history_to_context=True,
+    update_memory_on_run=True,
     markdown=True,
 )
