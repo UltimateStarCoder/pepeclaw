@@ -41,7 +41,6 @@ def create_dynamic_mcp_tools(
             else None
         )
 
-        # Fall back to env var if no token in metadata
         if not token and token_env_var:
             token = getenv(token_env_var)
 

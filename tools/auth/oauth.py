@@ -1,6 +1,7 @@
 import asyncio
 import json
 import webbrowser
+from datetime import timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -12,7 +13,6 @@ from pydantic import AnyUrl
 
 from agno.tools.mcp import MCPTools, StreamableHTTPClientParams
 
-# Default directory for cached tokens
 TOKEN_CACHE_DIR = Path.home() / ".pepeclaw" / "tokens"
 
 
@@ -55,7 +55,6 @@ async def _run_oauth_flow(
         asyncio.get_event_loop().create_future()
     )
 
-    # Local callback server to receive the OAuth redirect
     async def handle_callback(request: web.Request) -> web.Response:
         code = request.query.get("code")
         state = request.query.get("state")
@@ -72,13 +71,11 @@ async def _run_oauth_flow(
             auth_code_future.set_exception(RuntimeError(f"OAuth error: {error}"))
         return web.Response(text=f"OAuth error: {error}", status=400)
 
-    # The callback handler that OAuthClientProvider calls to get the auth code
     async def oauth_callback_handler() -> tuple[str, Optional[str]]:
         return await auth_code_future
 
     callback_url = f"http://localhost:{callback_port}/callback"
 
-    # Start local callback server
     app = web.Application()
     app.router.add_get("/callback", handle_callback)
     runner = web.AppRunner(app)
@@ -100,11 +97,7 @@ async def _run_oauth_flow(
             callback_handler=oauth_callback_handler,
         )
 
-        # Trigger the auth flow with a minimal MCP request
         async with httpx.AsyncClient(auth=oauth_provider, follow_redirects=True) as client:
-            # The OAuthClientProvider intercepts the 401 and runs the OAuth flow.
-            # After auth, it retries. We don't care about the response — just need
-            # the token to be stored.
             await client.post(
                 server_url,
                 content=b'{"jsonrpc":"2.0","method":"initialize","id":1}',
@@ -121,7 +114,6 @@ async def _run_oauth_flow(
 
 
 async def _open_browser(url: str) -> None:
-    """Open the auth URL in the user's browser."""
     print(f"\nOpening browser for authentication...\n  {url}\n")
     webbrowser.open(url)
 
@@ -141,9 +133,6 @@ async def get_oauth_token(
         client_name: OAuth client name shown during authorization.
         callback_port: Local port for the OAuth callback server.
         force_refresh: If True, ignore cached token and re-authenticate.
-
-    Returns:
-        The access token string.
     """
     cache_path = TOKEN_CACHE_DIR / cache_key
     storage = FileTokenStorage(cache_path)
@@ -196,8 +185,8 @@ def create_oauth_mcp_tools(
     server_params = StreamableHTTPClientParams(
         url=url,
         headers={"Authorization": f"Bearer {token}"},
-        timeout=timeout,
-        sse_read_timeout=sse_read_timeout,
+        timeout=timedelta(seconds=timeout),
+        sse_read_timeout=timedelta(seconds=sse_read_timeout),
     )
 
     return MCPTools(

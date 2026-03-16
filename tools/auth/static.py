@@ -1,3 +1,4 @@
+from datetime import timedelta
 from os import getenv
 
 from agno.tools.mcp import MCPTools, StreamableHTTPClientParams
@@ -32,8 +33,8 @@ def create_static_mcp_tools(
     server_params = StreamableHTTPClientParams(
         url=url,
         headers=headers,
-        timeout=timeout,
-        sse_read_timeout=sse_read_timeout,
+        timeout=timedelta(seconds=timeout),
+        sse_read_timeout=timedelta(seconds=sse_read_timeout),
     )
 
     return MCPTools(
