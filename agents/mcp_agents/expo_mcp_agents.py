@@ -1,11 +1,7 @@
 from agno.agent import Agent
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
 from tools.auth import create_oauth_mcp_tools
-
-load_dotenv()
-
 expo_mcp_tools = create_oauth_mcp_tools(
     url="https://mcp.expo.dev/mcp",
     cache_key="expo",

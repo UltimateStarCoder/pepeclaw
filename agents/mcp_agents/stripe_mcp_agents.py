@@ -1,11 +1,7 @@
 from agno.agent import Agent
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
 from tools.auth import create_oauth_mcp_tools
-
-load_dotenv()
-
 stripe_mcp_tools = create_oauth_mcp_tools(
     url="https://mcp.stripe.com",
     cache_key="stripe",

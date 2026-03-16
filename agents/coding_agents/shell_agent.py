@@ -1,11 +1,7 @@
 from agno.agent import Agent
 from agno.tools.shell import ShellTools
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
-
-load_dotenv()
-
 shell_agent = Agent(
     id="shell-agent",
     name="Shell Agent",

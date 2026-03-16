@@ -1,11 +1,7 @@
 from agno.agent import Agent
 from agno.tools.file import FileTools
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
-
-load_dotenv()
-
 file_agent = Agent(
     id="file-agent",
     name="File Agent",

@@ -1,5 +1,4 @@
 from agno.os import AgentOS
-from dotenv import load_dotenv
 
 from agents.coding_agents.coding_agent import coding_agent
 from agents.coding_agents.file_agent import file_agent
@@ -17,9 +16,6 @@ from teams.dev_team import dev_team
 from teams.docs_team import docs_team
 from teams.fullstack_team import fullstack_team
 from teams.payments_team import payments_team
-
-load_dotenv()
-
 agent_os = AgentOS(
     description="Pepeclaw AgentOS",
     agents=[

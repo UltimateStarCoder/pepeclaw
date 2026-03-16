@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from agno.db.sqlite import SqliteDb
 from agno.memory import MemoryManager
 from agno.models.anthropic import Claude

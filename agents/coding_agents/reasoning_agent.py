@@ -1,11 +1,7 @@
 from agno.agent import Agent
 from agno.tools.reasoning import ReasoningTools
-from dotenv import load_dotenv
 
 from config import db, memory_manager, reasoning_model
-
-load_dotenv()
-
 reasoning_agent = Agent(
     id="reasoning-agent",
     name="Reasoning Agent",

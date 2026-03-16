@@ -2,12 +2,8 @@ from pathlib import Path
 
 from agno.agent import Agent
 from agno.tools.python import PythonTools
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
-
-load_dotenv()
-
 python_agent = Agent(
     id="python-agent",
     name="Python Agent",

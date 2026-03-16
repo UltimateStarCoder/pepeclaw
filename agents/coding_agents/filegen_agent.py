@@ -2,12 +2,8 @@ from pathlib import Path
 
 from agno.agent import Agent
 from agno.tools.file_generation import FileGenerationTools
-from dotenv import load_dotenv
 
 from config import db, image_model, memory_manager
-
-load_dotenv()
-
 filegen_agent = Agent(
     id="filegen-agent",
     name="File Generation Agent",

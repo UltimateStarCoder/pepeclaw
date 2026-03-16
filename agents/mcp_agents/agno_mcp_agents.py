@@ -1,11 +1,7 @@
 from agno.agent import Agent
 from agno.tools.mcp import MCPTools
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
-
-load_dotenv()
-
 agno_mcp_tools = MCPTools(
     transport="streamable-http",
     url="https://docs.agno.com/mcp",

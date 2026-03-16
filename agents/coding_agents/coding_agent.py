@@ -1,11 +1,7 @@
 from agno.agent import Agent
 from agno.tools.coding import CodingTools
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
-
-load_dotenv()
-
 coding_agent = Agent(
     id="coding-agent",
     name="Coding Agent",

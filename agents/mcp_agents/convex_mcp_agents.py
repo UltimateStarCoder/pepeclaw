@@ -1,11 +1,7 @@
 from agno.agent import Agent
 from agno.tools.mcp import MCPTools
-from dotenv import load_dotenv
 
 from config import db, default_model, memory_manager
-
-load_dotenv()
-
 convex_mcp_tools = MCPTools(
     command="npx -y convex@latest mcp start",
     add_instructions=True,
