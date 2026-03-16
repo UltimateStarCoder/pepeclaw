@@ -97,6 +97,12 @@ pepeclaw auth login stripe
 pepeclaw auth status
 pepeclaw auth clear
 pepeclaw auth clear expo
+
+# Reset data
+pepeclaw reset --memory         # Clear agent memory database
+pepeclaw reset --tokens         # Clear OAuth tokens
+pepeclaw reset --generated      # Clear generated files
+pepeclaw reset --all            # Clear everything
 ```
 
 ## Models
