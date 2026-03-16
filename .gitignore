@@ -32,13 +32,9 @@ Thumbs.db
 .coverage
 htmlcov/
 
-# Pepeclaw
+# Pepeclaw runtime data
 tmp/
-~/.pepeclaw/
-
-# OAuth token cache
-.pepeclaw/
 
 # Google Cloud credentials
-*.json
-!pyproject.toml
+service-account*.json
+credentials*.json
