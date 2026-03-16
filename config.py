@@ -37,7 +37,7 @@ VERTEXAI = True
 # Anthropic models
 claude_opus = Claude(id="claude-opus-4-6")
 claude_sonnet = Claude(id="claude-sonnet-4-5")
-claude_haiku = Claude(id="claude-haiku-4-5-20251001")
+claude_haiku = Claude(id="claude-haiku-4-5")
 
 # OpenAI models
 gpt_5 = OpenAIResponses(id="gpt-5.4")
