@@ -1,0 +1,26 @@
+from agno.agent import Agent
+from agno.models.anthropic import Claude
+from agno.tools.reasoning import ReasoningTools
+from dotenv import load_dotenv
+
+load_dotenv()
+
+reasoning_agent = Agent(
+    id="reasoning-agent",
+    name="Reasoning Agent",
+    model=Claude(id="claude-sonnet-4-5"),
+    instructions=[
+        "You are a reasoning and debugging assistant.",
+        "Break down complex problems into steps.",
+        "State assumptions, evaluate evidence, and draw well-justified conclusions.",
+    ],
+    tools=[
+        ReasoningTools(
+            think=True,
+            analyze=True,
+            add_instructions=True,
+            add_few_shot=True,
+        ),
+    ],
+    markdown=True,
+)
