@@ -19,9 +19,13 @@ VERTEXAI = True
 #   Sonnet 4.5: fast workhorse for day-to-day coding and general tasks
 #   Haiku 4.5:  fastest, cheapest — simple tasks and high-volume
 # OpenAI (OPENAI_API_KEY)
-#   GPT-5.2:    slow but careful, large codebases, minimal-regret edits
-#   GPT-4o:     fast, multimodal, balanced
-#   GPT-4o Mini: cheapest OpenAI, good for simple tasks
+#   GPT-5.4:       best intelligence at scale
+#   GPT-5.4 Pro:   smarter, more precise
+#   GPT-5 Mini:    near-frontier, cost-efficient
+#   GPT-5 Nano:    fastest, most affordable
+#   GPT-5.3 Codex: most capable agentic coding
+#   GPT-Image-1.5: state-of-the-art image generation
+#   o3:            reasoning model
 # Google Vertex AI (GOOGLE_CLOUD_PROJECT)
 #   Gemini 3.1 Pro:        reasoning, agentic workflows, 1M context
 #   Gemini 3 Flash:        multimodal, coding, strong reasoning
@@ -36,9 +40,13 @@ claude_sonnet = Claude(id="claude-sonnet-4-5")
 claude_haiku = Claude(id="claude-haiku-4-5-20251001")
 
 # OpenAI models
-gpt_5 = OpenAIResponses(id="gpt-5.2")
-gpt_4o = OpenAIResponses(id="gpt-4o")
-gpt_4o_mini = OpenAIResponses(id="gpt-4o-mini")
+gpt_5 = OpenAIResponses(id="gpt-5.4")
+gpt_5_pro = OpenAIResponses(id="gpt-5.4-pro")
+gpt_5_mini = OpenAIResponses(id="gpt-5-mini")
+gpt_5_nano = OpenAIResponses(id="gpt-5-nano")
+gpt_codex = OpenAIResponses(id="gpt-5.3-codex")
+gpt_image = OpenAIResponses(id="gpt-image-1.5")
+o3 = OpenAIResponses(id="o3")
 
 # Google Vertex AI models
 gemini_pro = Gemini(id="gemini-3.1-pro", vertexai=VERTEXAI)
