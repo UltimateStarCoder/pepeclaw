@@ -63,7 +63,7 @@ gemini_image = Gemini(
 # ─────────────────────────────────────────────────────────────────
 default_model = claude_sonnet       # Day-to-day coding agents
 reasoning_model = claude_opus       # Reasoning agent, team leaders
-fast_model = gemini_lite            # Memory manager (high volume, cheap)
+fast_model = gpt_5_nano             # Memory manager (high volume, cheap)
 flash_model = gemini_fast           # File generation, simple tasks
 image_model = gemini_image          # Image generation
 
