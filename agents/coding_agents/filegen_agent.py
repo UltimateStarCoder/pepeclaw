@@ -4,14 +4,14 @@ from agno.agent import Agent
 from agno.tools.file_generation import FileGenerationTools
 from dotenv import load_dotenv
 
-from config import db, flash_model, memory_manager
+from config import db, image_model, memory_manager
 
 load_dotenv()
 
 filegen_agent = Agent(
     id="filegen-agent",
     name="File Generation Agent",
-    model=flash_model,
+    model=image_model,
     instructions=[
         "You are a file generation assistant.",
         "Create files in various formats when requested.",
