@@ -2,7 +2,7 @@
 
 Multi-agent system built with [Agno](https://github.com/agno-agi/agno) and MCP (Model Context Protocol).
 
-11 agents, 5 teams, 3 auth tools, 3 AI providers, shared memory, and a CLI.
+12 agents, 5 teams, 3 auth tools, 3 AI providers, shared memory, and a CLI.
 
 ## Project Structure
 
@@ -21,13 +21,14 @@ pepeclaw/
 │       ├── clerk_mcp_agents.py     # Clerk auth (public, no auth)
 │       ├── convex_mcp_agents.py    # Convex backend (stdio)
 │       ├── expo_mcp_agents.py      # Expo (OAuth)
+│       ├── livekit_mcp_agents.py   # LiveKit docs (public, no auth)
 │       └── stripe_mcp_agents.py    # Stripe (OAuth)
 ├── teams/
 │   ├── dev_team.py                 # Coding, Python, Shell, File, Reasoning
-│   ├── docs_team.py                # Agno, Clerk, Reasoning
+│   ├── docs_team.py                # Agno, Clerk, Expo, LiveKit, Reasoning
 │   ├── deploy_team.py              # Shell, Expo, Convex
 │   ├── payments_team.py            # Stripe, File Generation
-│   └── fullstack_team.py           # All 11 agents
+│   └── fullstack_team.py           # All 12 agents
 ├── tools/
 │   └── auth/
 │       ├── static.py               # Static auth — env var token
