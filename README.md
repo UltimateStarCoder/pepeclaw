@@ -25,7 +25,7 @@ pepeclaw/
 │       ├── svelte_mcp_agents.py    # Svelte/SvelteKit docs (public, no auth)
 │       └── stripe_mcp_agents.py    # Stripe (OAuth)
 ├── teams/
-│   ├── dev_team.py                 # Coding, Python, Shell, File, Reasoning
+│   ├── dev_team.py                 # Coding, Python, Shell, File, Reasoning, Svelte
 │   ├── docs_team.py                # Agno, Clerk, Expo, LiveKit, Svelte, Reasoning
 │   ├── deploy_team.py              # Shell, Expo, Convex
 │   ├── payments_team.py            # Stripe, File Generation
