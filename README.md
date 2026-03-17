@@ -57,6 +57,26 @@ cd pepeclaw
 uv sync
 ```
 
+### Global CLI
+
+Install pepeclaw as a global command available in any terminal:
+
+```bash
+# Editable — links to source, changes take effect immediately (recommended for development)
+uv tool install --from . --editable .
+
+# Standard — snapshot copy, stable but needs reinstall after source changes
+uv tool install --from .
+```
+
+This adds `pepeclaw` to your PATH (`~/.local/bin/`). Run `pepeclaw` from any directory.
+
+To uninstall:
+
+```bash
+uv tool uninstall pepeclaw
+```
+
 ## Setup
 
 ```bash
