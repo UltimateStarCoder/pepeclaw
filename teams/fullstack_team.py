@@ -11,6 +11,7 @@ from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
 from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
 from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
 from agents.mcp_agents.expo_mcp_agents import expo_mcp_agents
+from agents.mcp_agents.livekit_mcp_agents import livekit_mcp_agents
 from agents.mcp_agents.stripe_mcp_agents import stripe_mcp_agents
 
 fullstack_team = Team(
@@ -31,12 +32,13 @@ fullstack_team = Team(
         clerk_mcp_agents,
         convex_mcp_agents,
         expo_mcp_agents,
+        livekit_mcp_agents,
         stripe_mcp_agents,
     ],
     instructions=[
         "You are the lead architect of a full stack team.",
         "Delegate coding tasks to the appropriate coding agent.",
-        "Delegate documentation lookups to the Agno or Clerk agent.",
+        "Delegate documentation lookups to the Agno, Clerk, or LiveKit agent.",
         "Delegate deployments to the Expo or Convex agent.",
         "Delegate payments to the Stripe agent.",
         "Use the Reasoning Agent for planning and complex problem solving.",

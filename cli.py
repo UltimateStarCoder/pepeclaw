@@ -32,6 +32,7 @@ AGENTS = {
     "clerk": "agents.mcp_agents.clerk_mcp_agents:clerk_mcp_agents",
     "convex": "agents.mcp_agents.convex_mcp_agents:convex_mcp_agents",
     "expo": "agents.mcp_agents.expo_mcp_agents:expo_mcp_agents",
+    "livekit": "agents.mcp_agents.livekit_mcp_agents:livekit_mcp_agents",
     "stripe": "agents.mcp_agents.stripe_mcp_agents:stripe_mcp_agents",
 }
 

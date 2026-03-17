@@ -10,6 +10,7 @@ from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
 from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
 from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
 from agents.mcp_agents.expo_mcp_agents import expo_mcp_agents
+from agents.mcp_agents.livekit_mcp_agents import livekit_mcp_agents
 from agents.mcp_agents.stripe_mcp_agents import stripe_mcp_agents
 from teams.deploy_team import deploy_team
 from teams.dev_team import dev_team
@@ -31,6 +32,7 @@ agent_os = AgentOS(
         clerk_mcp_agents,
         convex_mcp_agents,
         expo_mcp_agents,
+        livekit_mcp_agents,
         stripe_mcp_agents,
     ],
     teams=[
