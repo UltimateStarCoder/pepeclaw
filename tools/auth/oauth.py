@@ -118,6 +118,25 @@ async def _open_browser(url: str) -> None:
     webbrowser.open(url)
 
 
+async def _validate_token(server_url: str, token: str) -> bool:
+    """Check if a cached token is still valid by making a test request."""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                server_url,
+                content=b'{"jsonrpc":"2.0","method":"initialize","id":1}',
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {token}",
+                },
+                timeout=10,
+            )
+            return response.status_code != 401
+    except Exception:
+        # Network errors shouldn't invalidate the token — let the actual connection handle it
+        return True
+
+
 async def get_oauth_token(
     server_url: str,
     cache_key: str,
@@ -126,6 +145,10 @@ async def get_oauth_token(
     force_refresh: bool = False,
 ) -> str:
     """Get an OAuth token, using cached token if available.
+
+    Validates cached tokens before returning them. If the token has expired,
+    the cache is cleared and the browser-based OAuth flow is re-triggered
+    automatically.
 
     Args:
         server_url: The MCP server URL.
@@ -140,7 +163,9 @@ async def get_oauth_token(
     if not force_refresh:
         tokens = await storage.get_tokens()
         if tokens:
-            return tokens.access_token
+            if await _validate_token(server_url, tokens.access_token):
+                return tokens.access_token
+            print(f"\n[pepeclaw] Cached token for '{cache_key}' expired. Re-authenticating...")
 
     return await _run_oauth_flow(
         server_url=server_url,
