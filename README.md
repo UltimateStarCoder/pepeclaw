@@ -64,10 +64,10 @@ Install pepeclaw as a global command available in any terminal:
 
 ```bash
 # Editable — links to source, changes take effect immediately (recommended for development)
-uv tool install --from . --editable .
+uv tool install --editable .
 
 # Standard — snapshot copy, stable but needs reinstall after source changes
-uv tool install --from .
+uv tool install .
 ```
 
 This adds `pepeclaw` to your PATH (`~/.local/bin/`). Run `pepeclaw` from any directory.
