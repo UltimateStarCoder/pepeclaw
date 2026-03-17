@@ -6,7 +6,7 @@ Multi-agent system built with [Agno](https://github.com/agno-agi/agno) and MCP (
 
 ## Project Structure
 
-```
+```text
 pepeclaw/
 ├── agents/
 │   ├── coding_agents/
@@ -74,7 +74,7 @@ pepeclaw looks for API keys in this order:
 2. **Global `~/.pepeclaw/.env`** — created by `pepeclaw init`
 3. **Shell environment** — exported variables
 
-```
+```env
 # Required
 ANTHROPIC_API_KEY=sk-ant-...
 
@@ -124,7 +124,7 @@ pepeclaw reset --all            # Clear everything
 All models are configured in `config.py`. Change a role assignment once, and every agent using that role updates automatically.
 
 | Role | Model | Used by |
-|------|-------|---------|
+| ---- | ----- | ------- |
 | `default_model` | Claude Sonnet 4.5 | All coding & MCP agents |
 | `reasoning_model` | Claude Opus 4.6 | Reasoning Agent, all team leaders |
 | `fast_model` | GPT-5 Nano | Memory Manager |
