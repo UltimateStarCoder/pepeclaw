@@ -316,16 +316,20 @@ def sessions_list(
     limit: int = typer.Option(20, "--limit", "-n", help="Max sessions to show."),
 ):
     """List past chat sessions."""
+    from datetime import datetime
+
     from agno.db.base import SessionType
     from config import db
 
-    table = Table(title="Chat Sessions")
-    table.add_column("Session ID", style="cyan")
+    table = Table(title="Chat Sessions", show_lines=True)
+    table.add_column("#", style="dim")
+    table.add_column("Session ID", style="cyan", no_wrap=True)
     table.add_column("Type", style="green")
     table.add_column("Agent/Team", style="yellow")
     table.add_column("User", style="dim")
     table.add_column("Created", style="dim")
 
+    all_sessions = []
     for stype in (SessionType.AGENT, SessionType.TEAM):
         try:
             sessions, _ = db.get_sessions(
@@ -336,21 +340,31 @@ def sessions_list(
                 sort_order="desc",
                 deserialize=False,
             )
+            for s in sessions:
+                all_sessions.append((stype, s))
         except Exception:
-            sessions = []
+            pass
 
-        for s in sessions:
-            sid = s.get("session_id", "?")
-            component = s.get("agent_id") or s.get("team_id") or "?"
-            uid = s.get("user_id", "?")
-            created = str(s.get("created_at", "?"))[:19]
-            table.add_row(sid[:12] + "...", stype.value, component, uid, created)
+    # Sort all sessions by created_at descending
+    all_sessions.sort(key=lambda x: x[1].get("created_at", 0), reverse=True)
+
+    for i, (stype, s) in enumerate(all_sessions[:limit], 1):
+        sid = s.get("session_id", "?")
+        component = s.get("agent_id") or s.get("team_id") or "?"
+        uid = s.get("user_id", "?")
+        raw_ts = s.get("created_at")
+        try:
+            created = datetime.fromtimestamp(int(raw_ts)).strftime("%Y-%m-%d %H:%M")
+        except (TypeError, ValueError, OSError):
+            created = str(raw_ts)
+        table.add_row(str(i), sid, stype.value, component, uid, created)
 
     if table.row_count == 0:
         console.print("[yellow]No sessions found.[/yellow]")
     else:
         console.print(table)
-        console.print(f"\n[dim]Resume a session: pepeclaw chat <name> -s <session-id>[/dim]")
+        console.print(f"\n[dim]Resume: pepeclaw chat <name> -s <session-id>[/dim]")
+        console.print("[dim]Copy the full Session ID from the table above.[/dim]")
 
 
 # ─────────────────────────────────────────────────────────────────
