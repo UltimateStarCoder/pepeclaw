@@ -24,7 +24,7 @@ VERTEXAI = True
 # ─────────────────────────────────────────────────────────────────
 # Anthropic (ANTHROPIC_API_KEY)
 #   Opus 4.6:   complex reasoning, large codebases, deep analysis
-#   Sonnet 4.5: fast workhorse for day-to-day coding and general tasks
+#   Sonnet 4.6: fast workhorse for day-to-day coding and general tasks (1M context)
 #   Haiku 4.5:  fastest, cheapest — simple tasks and high-volume
 # OpenAI (OPENAI_API_KEY)
 #   GPT-5.4:       best intelligence at scale
@@ -44,7 +44,7 @@ VERTEXAI = True
 
 # Anthropic models
 claude_opus = Claude(id="claude-opus-4-6")
-claude_sonnet = Claude(id="claude-sonnet-4-5")
+claude_sonnet = Claude(id="claude-sonnet-4-6")
 claude_haiku = Claude(id="claude-haiku-4-5")
 
 # OpenAI models
