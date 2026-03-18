@@ -171,6 +171,22 @@ def chat(
     console.print("[dim]Type 'exit' or 'quit' to end the conversation.[/dim]\n")
 
     async def _chat_loop():
+        # Pre-connect all MCP tools (workaround for Agno sync delegation bug)
+        all_tools = []
+        if hasattr(target, "tools") and target.tools:
+            all_tools.extend(target.tools)
+        if hasattr(target, "members"):
+            for member in target.members:
+                if hasattr(member, "tools") and member.tools:
+                    all_tools.extend(member.tools)
+
+        for tool in all_tools:
+            if hasattr(tool, "connect") and hasattr(tool, "initialized") and not tool.initialized:
+                try:
+                    await tool.connect()
+                except Exception:
+                    pass
+
         while True:
             try:
                 message = console.input("[bold cyan]You:[/bold cyan] ")
