@@ -125,6 +125,13 @@ pepeclaw list
 pepeclaw chat coding
 pepeclaw chat fullstack
 pepeclaw chat stripe --user-id me
+pepeclaw chat fullstack --session <id>  # Resume a previous session
+
+# Manage chat sessions
+pepeclaw sessions list
+pepeclaw sessions list --user-id me
+pepeclaw sessions clear <session-id>
+pepeclaw sessions clear --all
 
 # Manage OAuth tokens
 pepeclaw auth login expo
@@ -136,6 +143,7 @@ pepeclaw auth clear expo
 # Reset data
 pepeclaw reset --memory         # Clear agent memory database
 pepeclaw reset --tokens         # Clear OAuth tokens
+pepeclaw reset --sessions       # Clear all chat sessions
 pepeclaw reset --generated      # Clear generated files
 pepeclaw reset --all            # Clear everything
 ```
@@ -149,9 +157,9 @@ All models are configured in `config.py`. Change a role assignment once, and eve
 | `default_model` | Claude Sonnet 4.5 | All coding & MCP agents |
 | `reasoning_model` | Claude Opus 4.6 | Reasoning Agent, all team leaders |
 | `fast_model` | GPT-5 Nano | Memory Manager |
-| `image_model` | Gemini Flash Image | File Generation Agent |
+| `image_model` | Gemini 2.5 Flash Image | File Generation Agent |
 
-Additional models available in config: GPT-5.4, GPT-5.4 Pro, GPT-5 Mini, GPT-5.3 Codex, o3, Gemini 3.1 Pro, Gemini 3 Flash, Gemini 2.5 Flash.
+Additional models available in config: Claude Haiku, GPT-5.4, GPT-5.4 Pro, GPT-5 Mini, GPT-5.3 Codex, GPT Image 1.5, o3, Gemini 3.1 Pro, Gemini 3 Flash (preview), Gemini 2.5 Flash, Gemini 2.5 Flash Lite.
 
 ## Auth Tools
 
