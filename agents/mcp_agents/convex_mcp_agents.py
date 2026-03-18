@@ -4,6 +4,7 @@ from agno.tools.mcp import MCPTools
 from config import db, default_model, memory_manager
 convex_mcp_tools = MCPTools(
     command="npx -y convex@latest mcp start --project-dir .",
+    timeout_seconds=60,
     add_instructions=True,
 )
 
