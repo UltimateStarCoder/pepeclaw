@@ -22,6 +22,7 @@ dev_team = Team(
         "Delegate file read/write/search to the File Agent.",
         "Use the Reasoning Agent for debugging and complex problem analysis.",
         "Delegate Svelte and SvelteKit code analysis, autofixing, and playground links to the Svelte Agent.",
+        "After any code modification, ensure lint and type checks pass before considering the task complete. Delegate checks to the Coding Agent or Shell Agent.",
     ],
     show_members_responses=True,
     markdown=True,

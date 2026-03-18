@@ -6,7 +6,10 @@ file_agent = Agent(
     id="file-agent",
     name="File Agent",
     model=default_model,
-    instructions=["You are a file management assistant. Read, write, search, and organize files."],
+    instructions=[
+        "You are a file management assistant. Read, write, search, and organize files.",
+        "After saving files, verify the content was written correctly by reading it back.",
+    ],
     tools=[
         FileTools(
             enable_read_file=True,

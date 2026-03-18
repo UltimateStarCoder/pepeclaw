@@ -8,7 +8,10 @@ python_agent = Agent(
     id="python-agent",
     name="Python Agent",
     model=default_model,
-    instructions=["You are a Python coding assistant. Write and execute Python code to solve problems."],
+    instructions=[
+        "You are a Python coding assistant. Write and execute Python code to solve problems.",
+        "After writing or modifying Python code, check for syntax errors and type issues. Run lint checks if a linter config is present in the project.",
+    ],
     tools=[
         PythonTools(
             base_dir=Path("tmp/python"),
