@@ -154,7 +154,7 @@ All models are configured in `config.py`. Change a role assignment once, and eve
 
 | Role | Model | Used by |
 | ---- | ----- | ------- |
-| `default_model` | Claude Sonnet 4.5 | All coding & MCP agents |
+| `default_model` | Claude Sonnet 4.6 | All coding & MCP agents |
 | `reasoning_model` | Claude Opus 4.6 | Reasoning Agent, all team leaders |
 | `fast_model` | GPT-5 Nano | Memory Manager |
 | `image_model` | Gemini 2.5 Flash Image | File Generation Agent |
