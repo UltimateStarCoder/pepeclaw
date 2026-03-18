@@ -1,50 +1,22 @@
 from agno.team import Team
 
-from agents.coding_agents.coding_agent import coding_agent
 from config import db, reasoning_model
-from agents.coding_agents.file_agent import file_agent
-from agents.coding_agents.filegen_agent import filegen_agent
-from agents.coding_agents.python_agent import python_agent
-from agents.coding_agents.reasoning_agent import reasoning_agent
-from agents.coding_agents.shell_agent import shell_agent
-from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
-from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
-from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
-from agents.mcp_agents.expo_mcp_agents import expo_mcp_agents
-from agents.mcp_agents.livekit_mcp_agents import livekit_mcp_agents
-from agents.mcp_agents.svelte_mcp_agents import svelte_mcp_agents
-from agents.mcp_agents.stripe_mcp_agents import stripe_mcp_agents
+from teams.dev_team import dev_team
+from teams.docs_team import docs_team
+from teams.deploy_team import deploy_team
+from teams.payments_team import payments_team
 
 fullstack_team = Team(
     id="fullstack-team",
     name="Full Stack Team",
-    description="A team of all agents orchestrated to handle any task.",
+    description="A team of sub-teams orchestrated to handle any task.",
     model=reasoning_model,
-    members=[
-        # Coding agents
-        coding_agent,
-        python_agent,
-        shell_agent,
-        file_agent,
-        filegen_agent,
-        reasoning_agent,
-        # MCP agents
-        agno_mcp_agents,
-        clerk_mcp_agents,
-        convex_mcp_agents,
-        expo_mcp_agents,
-        livekit_mcp_agents,
-        svelte_mcp_agents,
-        stripe_mcp_agents,
-    ],
+    members=[dev_team, docs_team, deploy_team, payments_team],
     instructions=[
         "You are the lead architect of a full stack team.",
-        "Delegate coding tasks to the appropriate coding agent.",
-        "Delegate documentation lookups to the Agno, Clerk, LiveKit, or Svelte agent.",
-        "Delegate deployments to the Expo or Convex agent.",
-        "Delegate payments to the Stripe agent.",
-        "Use the Reasoning Agent for planning and complex problem solving.",
-        "Use the File Generation Agent for creating reports and documents.",
+        "Delegate tasks to the most appropriate sub-team based on the work needed.",
+        "If a sub-team fails or can't complete a task, re-delegate to a different sub-team.",
+        "After any code modification, ensure the Dev Team runs lint and type checks.",
     ],
     show_members_responses=True,
     markdown=True,

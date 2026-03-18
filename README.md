@@ -29,7 +29,7 @@ pepeclaw/
 │   ├── docs_team.py                # Agno, Clerk, Expo, LiveKit, Svelte, Reasoning
 │   ├── deploy_team.py              # Shell, Expo, Convex
 │   ├── payments_team.py            # Stripe, File Generation
-│   └── fullstack_team.py           # All 13 agents
+│   └── fullstack_team.py           # Dev, Docs, Deploy, Payments sub-teams
 ├── tools/
 │   └── auth/
 │       ├── static.py               # Static auth — env var token
