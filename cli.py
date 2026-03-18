@@ -2,6 +2,7 @@ import asyncio
 import shutil
 from pathlib import Path
 from typing import Optional
+from uuid import uuid4
 
 import typer
 from rich.console import Console
@@ -14,6 +15,8 @@ app = typer.Typer(
 )
 auth_app = typer.Typer(help="Manage OAuth authentication tokens.")
 app.add_typer(auth_app, name="auth")
+sessions_app = typer.Typer(help="Manage chat sessions.")
+app.add_typer(sessions_app, name="sessions")
 
 console = Console()
 
@@ -154,6 +157,7 @@ def list_all():
 def chat(
     name: str = typer.Argument(help="Agent or team name (e.g., 'coding', 'fullstack')."),
     user_id: str = typer.Option("cli-user", help="User ID for memory/session."),
+    session: Optional[str] = typer.Option(None, "--session", "-s", help="Resume a previous session by ID."),
 ):
     """Chat with a specific agent or team in the terminal."""
     if name in AGENTS:
@@ -167,7 +171,13 @@ def chat(
         console.print(f"Available: {', '.join(list(AGENTS) + list(TEAMS))}")
         raise typer.Exit(1)
 
+    session_id = session or str(uuid4())
+
     console.print(f"\n[bold]Chatting with {target.name} ({kind})[/bold]")
+    if session:
+        console.print(f"[dim]Resuming session: {session_id}[/dim]")
+    else:
+        console.print(f"[dim]Session: {session_id}[/dim]")
     console.print("[dim]Type 'exit' or 'quit' to end the conversation.[/dim]\n")
 
     async def _chat_loop():
@@ -199,7 +209,9 @@ def chat(
             if not message.strip():
                 continue
 
-            await target.aprint_response(message, user_id=user_id, stream=True)
+            await target.aprint_response(
+                message, user_id=user_id, session_id=session_id, stream=True
+            )
             console.print()
 
     asyncio.run(_chat_loop())
@@ -295,6 +307,93 @@ def auth_status():
 
 
 # ─────────────────────────────────────────────────────────────────
+# pepeclaw sessions list
+# ─────────────────────────────────────────────────────────────────
+
+@sessions_app.command(name="list")
+def sessions_list(
+    user_id: Optional[str] = typer.Option(None, "--user-id", "-u", help="Filter by user ID."),
+    limit: int = typer.Option(20, "--limit", "-n", help="Max sessions to show."),
+):
+    """List past chat sessions."""
+    from agno.db.base import SessionType
+    from config import db
+
+    table = Table(title="Chat Sessions")
+    table.add_column("Session ID", style="cyan")
+    table.add_column("Type", style="green")
+    table.add_column("Agent/Team", style="yellow")
+    table.add_column("User", style="dim")
+    table.add_column("Created", style="dim")
+
+    for stype in (SessionType.AGENT, SessionType.TEAM):
+        try:
+            sessions, _ = db.get_sessions(
+                session_type=stype,
+                user_id=user_id,
+                limit=limit,
+                sort_by="created_at",
+                sort_order="desc",
+                deserialize=False,
+            )
+        except Exception:
+            sessions = []
+
+        for s in sessions:
+            sid = s.get("session_id", "?")
+            component = s.get("agent_id") or s.get("team_id") or "?"
+            uid = s.get("user_id", "?")
+            created = str(s.get("created_at", "?"))[:19]
+            table.add_row(sid[:12] + "...", stype.value, component, uid, created)
+
+    if table.row_count == 0:
+        console.print("[yellow]No sessions found.[/yellow]")
+    else:
+        console.print(table)
+        console.print(f"\n[dim]Resume a session: pepeclaw chat <name> -s <session-id>[/dim]")
+
+
+# ─────────────────────────────────────────────────────────────────
+# pepeclaw sessions clear
+# ─────────────────────────────────────────────────────────────────
+
+@sessions_app.command(name="clear")
+def sessions_clear(
+    session_id: Optional[str] = typer.Argument(None, help="Session ID to clear. Omit with --all to clear all."),
+    all_: bool = typer.Option(False, "--all", "-a", help="Clear all sessions."),
+    user_id: Optional[str] = typer.Option(None, "--user-id", "-u", help="Filter by user ID when clearing all."),
+):
+    """Clear chat sessions."""
+    from agno.db.base import SessionType
+    from config import db
+
+    if not session_id and not all_:
+        console.print("[yellow]Specify a session ID or use --all.[/yellow]")
+        raise typer.Exit(1)
+
+    if session_id:
+        deleted = db.delete_session(session_id, user_id=user_id)
+        if deleted:
+            console.print(f"[green]Cleared session {session_id}.[/green]")
+        else:
+            console.print(f"[yellow]Session {session_id} not found.[/yellow]")
+    elif all_:
+        count = 0
+        for stype in (SessionType.AGENT, SessionType.TEAM):
+            try:
+                sessions, _ = db.get_sessions(
+                    session_type=stype, user_id=user_id, deserialize=False,
+                )
+                if sessions:
+                    ids = [s["session_id"] for s in sessions]
+                    db.delete_sessions(ids, user_id=user_id)
+                    count += len(ids)
+            except Exception:
+                pass
+        console.print(f"[green]Cleared {count} session(s).[/green]")
+
+
+# ─────────────────────────────────────────────────────────────────
 # pepeclaw reset
 # ─────────────────────────────────────────────────────────────────
 
@@ -302,12 +401,13 @@ def auth_status():
 def reset(
     memory: bool = typer.Option(False, "--memory", "-m", help="Clear agent memory database."),
     tokens: bool = typer.Option(False, "--tokens", "-t", help="Clear cached OAuth tokens."),
+    sessions: bool = typer.Option(False, "--sessions", "-s", help="Clear all chat sessions."),
     generated: bool = typer.Option(False, "--generated", "-g", help="Clear generated files."),
     all_: bool = typer.Option(False, "--all", "-a", help="Clear everything."),
 ):
-    """Clear memory, tokens, and/or generated files."""
-    if not any([memory, tokens, generated, all_]):
-        console.print("[yellow]Specify what to reset: --memory, --tokens, --generated, or --all[/yellow]")
+    """Clear memory, tokens, sessions, and/or generated files."""
+    if not any([memory, tokens, sessions, generated, all_]):
+        console.print("[yellow]Specify what to reset: --memory, --tokens, --sessions, --generated, or --all[/yellow]")
         raise typer.Exit(1)
 
     if all_ or memory:
@@ -317,6 +417,22 @@ def reset(
             console.print("[green]Cleared agent memory database.[/green]")
         else:
             console.print("[yellow]No memory database found.[/yellow]")
+
+    if (all_ or sessions) and not (all_ and memory):
+        # Only clear sessions separately if we didn't already delete the whole DB
+        from agno.db.base import SessionType
+        from config import db
+
+        count = 0
+        for stype in (SessionType.AGENT, SessionType.TEAM):
+            try:
+                found, _ = db.get_sessions(session_type=stype, deserialize=False)
+                if found:
+                    db.delete_sessions([s["session_id"] for s in found])
+                    count += len(found)
+            except Exception:
+                pass
+        console.print(f"[green]Cleared {count} chat session(s).[/green]")
 
     if all_ or tokens:
         if TOKEN_CACHE_DIR.exists():
