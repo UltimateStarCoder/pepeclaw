@@ -7,6 +7,7 @@ load_dotenv()
 load_dotenv(Path.home() / ".pepeclaw" / ".env")
 
 from agno.db.sqlite import SqliteDb
+from agno.learn.config import SessionContextConfig
 from agno.learn.machine import LearningMachine
 from agno.models.anthropic import Claude
 from agno.models.google import Gemini
@@ -80,7 +81,7 @@ learning_machine = LearningMachine(
     model=fast_model,
     user_profile=True,
     user_memory=True,
-    session_context=True,
+    session_context=SessionContextConfig(enable_planning=True),
     entity_memory=True,
     learned_knowledge=True,
     decision_log=True,
