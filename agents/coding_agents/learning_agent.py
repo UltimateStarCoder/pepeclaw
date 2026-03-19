@@ -1,25 +1,13 @@
 from agno.agent import Agent
-from agno.learn.machine import LearningMachine
 from agno.tools.coding import CodingTools
 
-from config import db, default_model, fast_model
+from config import db, default_model, learning_machine
 
 learning_tools = CodingTools(
     base_dir=".",
     enable_grep=True,
     enable_find=True,
     enable_ls=True,
-)
-
-learning_machine = LearningMachine(
-    db=db,
-    model=fast_model,
-    user_profile=True,
-    user_memory=True,
-    session_context=True,
-    entity_memory=True,
-    learned_knowledge=True,
-    decision_log=True,
 )
 
 learning_agent = Agent(
