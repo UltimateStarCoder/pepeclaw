@@ -2,7 +2,7 @@ from agno.agent import Agent
 from agno.learn.machine import LearningMachine
 from agno.tools.coding import CodingTools
 
-from config import db, default_model, fast_model, memory_manager
+from config import db, default_model, fast_model
 
 learning_tools = CodingTools(
     base_dir=".",
@@ -55,10 +55,7 @@ learning_agent = Agent(
     ],
     tools=[learning_tools],
     db=db,
-    memory_manager=memory_manager,
-    enable_agentic_memory=True,
     add_history_to_context=True,
-    update_memory_on_run=True,
     add_learnings_to_context=True,
     markdown=True,
 )
