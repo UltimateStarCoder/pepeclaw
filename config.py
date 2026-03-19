@@ -7,7 +7,7 @@ load_dotenv()
 load_dotenv(Path.home() / ".pepeclaw" / ".env")
 
 from agno.db.sqlite import SqliteDb
-from agno.memory import MemoryManager
+from agno.learn.machine import LearningMachine
 from agno.models.anthropic import Claude
 from agno.models.google import Gemini
 from agno.models.openai import OpenAIResponses
@@ -75,7 +75,13 @@ fast_model = gpt_5_nano             # Memory manager (high volume, cheap)
 flash_model = gemini_fast           # File generation, simple tasks
 image_model = gemini_image          # Image generation
 
-memory_manager = MemoryManager(
-    model=fast_model,
+learning_machine = LearningMachine(
     db=db,
+    model=fast_model,
+    user_profile=True,
+    user_memory=True,
+    session_context=True,
+    entity_memory=True,
+    learned_knowledge=True,
+    decision_log=True,
 )

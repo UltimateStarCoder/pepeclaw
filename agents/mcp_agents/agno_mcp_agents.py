@@ -1,7 +1,7 @@
 from agno.agent import Agent
 from agno.tools.mcp import MCPTools
 
-from config import db, default_model, memory_manager
+from config import db, default_model, learning_machine
 agno_mcp_tools = MCPTools(
     transport="streamable-http",
     url="https://docs.agno.com/mcp",
@@ -15,9 +15,8 @@ agno_mcp_agents = Agent(
     instructions=["You are a helpful agno mcp agent assistant."],
     tools=[agno_mcp_tools],
     db=db,
-    memory_manager=memory_manager,
-    enable_agentic_memory=True,
+    learning=learning_machine,
     add_history_to_context=True,
-    update_memory_on_run=True,
+    add_learnings_to_context=True,
     markdown=True,
 )

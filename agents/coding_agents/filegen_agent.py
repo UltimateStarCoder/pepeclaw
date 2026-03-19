@@ -3,7 +3,7 @@ from pathlib import Path
 from agno.agent import Agent
 from agno.tools.file_generation import FileGenerationTools
 
-from config import db, image_model, memory_manager
+from config import db, image_model, learning_machine
 filegen_agent = Agent(
     id="filegen-agent",
     name="File Generation Agent",
@@ -15,9 +15,8 @@ filegen_agent = Agent(
     ],
     tools=[FileGenerationTools(output_directory=Path("tmp/generated"))],
     db=db,
-    memory_manager=memory_manager,
-    enable_agentic_memory=True,
+    learning=learning_machine,
     add_history_to_context=True,
-    update_memory_on_run=True,
+    add_learnings_to_context=True,
     markdown=True,
 )

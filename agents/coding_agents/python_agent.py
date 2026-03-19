@@ -3,7 +3,7 @@ from pathlib import Path
 from agno.agent import Agent
 from agno.tools.python import PythonTools
 
-from config import db, default_model, memory_manager
+from config import db, default_model, learning_machine
 python_agent = Agent(
     id="python-agent",
     name="Python Agent",
@@ -19,9 +19,8 @@ python_agent = Agent(
         ),
     ],
     db=db,
-    memory_manager=memory_manager,
-    enable_agentic_memory=True,
+    learning=learning_machine,
     add_history_to_context=True,
-    update_memory_on_run=True,
+    add_learnings_to_context=True,
     markdown=True,
 )
