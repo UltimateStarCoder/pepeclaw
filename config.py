@@ -70,11 +70,21 @@ gemini_image = Gemini(
 
 # Role assignments
 # ─────────────────────────────────────────────────────────────────
-default_model = claude_sonnet       # Day-to-day coding agents
+default_model = claude_sonnet       # Day-to-day coding and MCP agents
 reasoning_model = claude_opus       # Reasoning agent, team leaders
-fast_model = gpt_5_nano             # Memory manager (high volume, cheap)
-flash_model = gemini_fast           # File generation, simple tasks
-image_model = gemini_image          # Image generation
+fast_model = gpt_5_nano             # Learning Machine extraction (High Volume, cheap)
+flash_model = gemini_fast           # Quick tasks, lightweight operations
+image_model = gemini_image          # Image generation (filegen agent)
+
+# Learning Machine — all agents share this for persistent learning
+# ─────────────────────────────────────────────────────────────────
+# Stores:
+#   user_profile — structured user data (role, preferences, coding style)
+#   user_memory — unstructured observations per user
+#   session_context — goals, plans, and progress per session (planning enabled)
+#   entity_memory — knowledge graph of project entities and relationships
+#   learned_knowledge — reusable insights and patterns across all interactions
+#   decision_log — technical decisions with rationale and outcomes
 
 learning_machine = LearningMachine(
     db=db,
