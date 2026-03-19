@@ -164,14 +164,14 @@ def chat(
     name: str = typer.Argument(help="Agent or team name (e.g., 'coding', 'fullstack')."),
     user_id: str = typer.Option("cli-user", help="User ID for memory/session."),
     session: Optional[str] = typer.Option(None, "--session", "-s", help="Resume a previous session by ID."),
+    stream: bool = typer.Option(True, help="Stream responses."),
+    markdown: bool = typer.Option(True, help="Format output as markdown."),
 ):
     """Chat with a specific agent or team in the terminal."""
     if name in AGENTS:
         target = _load(AGENTS[name])
-        kind = "agent"
     elif name in TEAMS:
         target = _load(TEAMS[name])
-        kind = "team"
     else:
         console.print(f"[red]Unknown agent or team: '{name}'[/red]")
         console.print(f"Available: {', '.join(list(AGENTS) + list(TEAMS))}")
@@ -179,49 +179,15 @@ def chat(
 
     session_id = session or str(uuid4())
 
-    console.print(f"\n[bold]Chatting with {target.name} ({kind})[/bold]")
-    if session:
-        console.print(f"[dim]Resuming session: {session_id}[/dim]")
-    else:
-        console.print(f"[dim]Session: {session_id}[/dim]")
-    console.print("[dim]Type 'exit' or 'quit' to end the conversation.[/dim]\n")
-
-    async def _chat_loop():
-        # Pre-connect all MCP tools (workaround for Agno sync delegation bug)
-        all_tools = []
-        if hasattr(target, "tools") and target.tools:
-            all_tools.extend(target.tools)
-        if hasattr(target, "members"):
-            for member in target.members:
-                if hasattr(member, "tools") and member.tools:
-                    all_tools.extend(member.tools)
-
-        for tool in all_tools:
-            if hasattr(tool, "connect") and hasattr(tool, "initialized") and not tool.initialized:
-                try:
-                    await tool.connect()
-                except Exception:
-                    pass
-
-        while True:
-            try:
-                message = console.input("[bold cyan]You:[/bold cyan] ")
-            except (EOFError, KeyboardInterrupt):
-                break
-
-            if message.strip().lower() in ("exit", "quit", "q"):
-                break
-
-            if not message.strip():
-                continue
-
-            await target.aprint_response(
-                message, user_id=user_id, session_id=session_id, stream=True
-            )
-            console.print()
-
-    asyncio.run(_chat_loop())
-    console.print("\n[dim]Goodbye![/dim]")
+    asyncio.run(
+        target.acli_app(
+            session_id=session_id,
+            user_id=user_id,
+            stream=stream,
+            markdown=markdown,
+            exit_on=["exit", "quit", "q"],
+        )
+    )
 
 
 # ─────────────────────────────────────────────────────────────────
