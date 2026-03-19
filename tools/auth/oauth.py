@@ -137,6 +137,73 @@ async def _validate_token(server_url: str, token: str) -> bool:
         return True
 
 
+async def _discover_token_endpoint(server_url: str) -> Optional[str]:
+    """Discover the token endpoint from the OAuth server metadata."""
+    from urllib.parse import urlparse
+
+    parsed = urlparse(server_url)
+    base = f"{parsed.scheme}://{parsed.hostname}"
+    if parsed.port and parsed.port not in (80, 443):
+        base += f":{parsed.port}"
+
+    metadata_urls = [
+        f"{base}/.well-known/oauth-authorization-server",
+        f"{base}/.well-known/openid-configuration",
+    ]
+
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        for url in metadata_urls:
+            try:
+                response = await client.get(url, timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    token_endpoint = data.get("token_endpoint")
+                    if token_endpoint:
+                        return token_endpoint
+            except Exception:
+                continue
+    return None
+
+
+async def _refresh_access_token(
+    server_url: str,
+    storage: FileTokenStorage,
+) -> Optional[str]:
+    """Use a refresh token to get a new access token silently (no browser)."""
+    tokens = await storage.get_tokens()
+    client_info = await storage.get_client_info()
+
+    if not tokens or not tokens.refresh_token or not client_info:
+        return None
+
+    token_endpoint = await _discover_token_endpoint(server_url)
+    if not token_endpoint:
+        return None
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                token_endpoint,
+                data={
+                    "grant_type": "refresh_token",
+                    "refresh_token": tokens.refresh_token,
+                    "client_id": client_info.client_id,
+                },
+                timeout=10,
+            )
+            if response.status_code == 200:
+                new_tokens = OAuthToken(**response.json())
+                # Preserve the refresh token if the server didn't issue a new one
+                if not new_tokens.refresh_token and tokens.refresh_token:
+                    new_tokens.refresh_token = tokens.refresh_token
+                await storage.set_tokens(new_tokens)
+                return new_tokens.access_token
+    except Exception:
+        pass
+
+    return None
+
+
 async def get_oauth_token(
     server_url: str,
     cache_key: str,
@@ -146,9 +213,10 @@ async def get_oauth_token(
 ) -> str:
     """Get an OAuth token, using cached token if available.
 
-    Validates cached tokens before returning them. If the token has expired,
-    the cache is cleared and the browser-based OAuth flow is re-triggered
-    automatically.
+    Strategy:
+      1. Use cached access token if still valid
+      2. Use refresh token to silently get a new access token
+      3. Fall back to full browser OAuth flow
 
     Args:
         server_url: The MCP server URL.
@@ -163,10 +231,23 @@ async def get_oauth_token(
     if not force_refresh:
         tokens = await storage.get_tokens()
         if tokens:
+            # 1. Try cached access token
             if await _validate_token(server_url, tokens.access_token):
                 return tokens.access_token
-            print(f"\n[pepeclaw] Cached token for '{cache_key}' expired. Re-authenticating...")
 
+            # 2. Try refresh token (silent, no browser)
+            if tokens.refresh_token:
+                print(f"\n[pepeclaw] Token for '{cache_key}' expired. Refreshing silently...")
+                new_token = await _refresh_access_token(server_url, storage)
+                if new_token:
+                    print(f"[pepeclaw] Token for '{cache_key}' refreshed successfully.")
+                    return new_token
+                print(f"[pepeclaw] Refresh failed for '{cache_key}'. Opening browser...")
+
+            else:
+                print(f"\n[pepeclaw] Token for '{cache_key}' expired. Re-authenticating...")
+
+    # 3. Full browser OAuth flow
     return await _run_oauth_flow(
         server_url=server_url,
         storage=storage,
