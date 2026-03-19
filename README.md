@@ -150,11 +150,12 @@ pepeclaw auth clear
 pepeclaw auth clear expo
 
 # Reset data
-pepeclaw reset --learning       # Clear all learning data (profiles, memory, entities, decisions)
+pepeclaw reset --learning       # Clear learning data only (profiles, memory, entities, decisions)
+pepeclaw reset --sessions       # Clear chat sessions only
 pepeclaw reset --tokens         # Clear OAuth tokens
-pepeclaw reset --sessions       # Clear all chat sessions
 pepeclaw reset --generated      # Clear generated files
-pepeclaw reset --all            # Clear everything
+pepeclaw reset --db             # Delete entire database (learning + sessions + everything)
+pepeclaw reset --all            # Clear everything (db + tokens + generated)
 ```
 
 ## Teams

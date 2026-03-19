@@ -405,27 +405,49 @@ def sessions_clear(
 
 @app.command()
 def reset(
-    learning: bool = typer.Option(False, "--learning", "-l", help="Clear all learning data (profiles, memory, entities, decisions)."),
-    tokens: bool = typer.Option(False, "--tokens", "-t", help="Clear cached OAuth tokens."),
+    learning: bool = typer.Option(False, "--learning", "-l", help="Clear learning data (profiles, memory, entities, decisions)."),
     sessions: bool = typer.Option(False, "--sessions", "-s", help="Clear all chat sessions."),
+    tokens: bool = typer.Option(False, "--tokens", "-t", help="Clear cached OAuth tokens."),
     generated: bool = typer.Option(False, "--generated", "-g", help="Clear generated files."),
+    db_: bool = typer.Option(False, "--db", help="Delete entire database (learning + sessions + everything)."),
     all_: bool = typer.Option(False, "--all", "-a", help="Clear everything."),
 ):
-    """Clear learning data, tokens, sessions, and/or generated files."""
-    if not any([learning, tokens, sessions, generated, all_]):
-        console.print("[yellow]Specify what to reset: --learning, --tokens, --sessions, --generated, or --all[/yellow]")
+    """Clear learning data, sessions, tokens, and/or generated files."""
+    if not any([learning, sessions, tokens, generated, db_, all_]):
+        console.print("[yellow]Specify what to reset: --learning, --sessions, --tokens, --generated, --db, or --all[/yellow]")
         raise typer.Exit(1)
 
-    if all_ or learning:
+    if all_ or db_:
         db_path = Path("tmp/pepeclaw.db")
         if db_path.exists():
             db_path.unlink()
-            console.print("[green]Cleared agent learning database.[/green]")
+            console.print("[green]Deleted database (tmp/pepeclaw.db).[/green]")
         else:
-            console.print("[yellow]No learning database found.[/yellow]")
+            console.print("[yellow]No database found.[/yellow]")
 
-    if (all_ or sessions) and not (all_ and learning):
-        # Only clear sessions separately if we didn't already delete the whole DB
+    if (all_ or learning) and not (all_ or db_):
+        # Clear only learning-related tables, preserve sessions
+        import sqlite3
+
+        db_path = Path("tmp/pepeclaw.db")
+        if db_path.exists():
+            conn = sqlite3.connect(str(db_path))
+            cursor = conn.cursor()
+            cleared = 0
+            for table in ("agno_learnings", "agno_memories", "agno_knowledge"):
+                try:
+                    cursor.execute(f'DELETE FROM "{table}"')
+                    cleared += cursor.rowcount
+                except sqlite3.OperationalError:
+                    pass
+            conn.commit()
+            conn.close()
+            console.print(f"[green]Cleared {cleared} learning record(s). Sessions preserved.[/green]")
+        else:
+            console.print("[yellow]No database found.[/yellow]")
+
+    if (all_ or sessions) and not (all_ or db_):
+        # Clear sessions only, preserve learning data
         from agno.db.base import SessionType
         from config import db
 
@@ -438,7 +460,7 @@ def reset(
                     count += len(found)
             except Exception:
                 pass
-        console.print(f"[green]Cleared {count} chat session(s).[/green]")
+        console.print(f"[green]Cleared {count} chat session(s). Learning data preserved.[/green]")
 
     if all_ or tokens:
         if TOKEN_CACHE_DIR.exists():
