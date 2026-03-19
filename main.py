@@ -5,6 +5,7 @@ from agents.coding_agents.file_agent import file_agent
 from agents.coding_agents.filegen_agent import filegen_agent
 from agents.coding_agents.python_agent import python_agent
 from agents.coding_agents.reasoning_agent import reasoning_agent
+from agents.coding_agents.learning_agent import learning_agent
 from agents.coding_agents.shell_agent import shell_agent
 from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
 from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
@@ -15,10 +16,11 @@ from agents.mcp_agents.livekit_mcp_agents import livekit_mcp_agents
 from agents.mcp_agents.svelte_mcp_agents import svelte_mcp_agents
 from agents.mcp_agents.stripe_mcp_agents import stripe_mcp_agents
 from teams.deploy_team import deploy_team
-from teams.dev_team import dev_team
+from teams.code_team import code_team
 from teams.docs_team import docs_team
 from teams.fullstack_team import fullstack_team
 from teams.payments_team import payments_team
+from teams.research_team import research_team
 agent_os = AgentOS(
     description="Pepeclaw AgentOS",
     agents=[
@@ -29,6 +31,7 @@ agent_os = AgentOS(
         file_agent,
         filegen_agent,
         reasoning_agent,
+        learning_agent,
         # MCP agents
         agno_mcp_agents,
         clerk_mcp_agents,
@@ -40,10 +43,11 @@ agent_os = AgentOS(
         stripe_mcp_agents,
     ],
     teams=[
-        dev_team,
+        code_team,
         docs_team,
         deploy_team,
         payments_team,
+        research_team,
         fullstack_team,
     ],
 )

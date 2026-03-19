@@ -31,6 +31,7 @@ AGENTS = {
     "file": "agents.coding_agents.file_agent:file_agent",
     "filegen": "agents.coding_agents.filegen_agent:filegen_agent",
     "reasoning": "agents.coding_agents.reasoning_agent:reasoning_agent",
+    "learning": "agents.coding_agents.learning_agent:learning_agent",
     "agno": "agents.mcp_agents.agno_mcp_agents:agno_mcp_agents",
     "clerk": "agents.mcp_agents.clerk_mcp_agents:clerk_mcp_agents",
     "convex": "agents.mcp_agents.convex_mcp_agents:convex_mcp_agents",
@@ -42,10 +43,11 @@ AGENTS = {
 }
 
 TEAMS = {
-    "dev": "teams.dev_team:dev_team",
+    "code": "teams.code_team:code_team",
     "docs": "teams.docs_team:docs_team",
     "deploy": "teams.deploy_team:deploy_team",
     "payments": "teams.payments_team:payments_team",
+    "research": "teams.research_team:research_team",
     "fullstack": "teams.fullstack_team:fullstack_team",
 }
 
