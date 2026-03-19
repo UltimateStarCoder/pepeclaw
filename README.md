@@ -2,7 +2,7 @@
 
 Multi-agent system built with [Agno](https://github.com/agno-agi/agno) and MCP (Model Context Protocol).
 
-13 agents, 5 teams, 3 auth tools, 3 AI providers, shared memory, and a CLI.
+18 agents, 6 teams, 3 auth methods, 3 AI providers, Learning Machine, and a CLI.
 
 ## Project Structure
 
@@ -15,28 +15,34 @@ pepeclaw/
 │   │   ├── shell_agent.py          # Shell commands
 │   │   ├── file_agent.py           # Read, write, search files
 │   │   ├── filegen_agent.py        # Generate files & images
-│   │   └── reasoning_agent.py      # Structured thinking & debugging
+│   │   ├── reasoning_agent.py      # Structured thinking & debugging
+│   │   ├── learning_agent.py       # Adaptive learning with full Learning Machine
+│   │   ├── github_agent.py         # GitHub repos, issues, PRs, branches
+│   │   ├── calculator_agent.py     # Math operations & numerical analysis
+│   │   └── docker_agent.py         # Docker container management
 │   └── mcp_agents/
 │       ├── agno_mcp_agents.py      # Agno docs (public, no auth)
 │       ├── clerk_mcp_agents.py     # Clerk auth (public, no auth)
 │       ├── convex_mcp_agents.py    # Convex backend (stdio)
+│       ├── convex_auth_mcp_agents.py # Convex Auth specialist (stdio)
 │       ├── expo_mcp_agents.py      # Expo (OAuth)
 │       ├── livekit_mcp_agents.py   # LiveKit docs (public, no auth)
 │       ├── svelte_mcp_agents.py    # Svelte/SvelteKit docs (public, no auth)
-│       └── stripe_mcp_agents.py    # Stripe (OAuth)
+│       └── stripe_mcp_agents.py    # Stripe (OAuth + refresh tokens)
 ├── teams/
-│   ├── dev_team.py                 # Coding, Python, Shell, File, Reasoning, Svelte
-│   ├── docs_team.py                # Agno, Clerk, Expo, LiveKit, Svelte, Reasoning
-│   ├── deploy_team.py              # Shell, Expo, Convex
+│   ├── code_team.py                # Coding, Python, Shell, File, Filegen, Reasoning, Learning, GitHub
+│   ├── docs_team.py                # Agno, Clerk, Convex Auth, LiveKit, Svelte
+│   ├── deploy_team.py              # Shell, Docker, Expo, Convex
 │   ├── payments_team.py            # Stripe, File Generation
-│   └── fullstack_team.py           # Dev, Docs, Deploy, Payments sub-teams
+│   ├── research_team.py            # Learning, Reasoning, Calculator, Agno
+│   └── fullstack_team.py           # Code, Docs, Deploy, Payments, Research sub-teams
 ├── tools/
 │   └── auth/
 │       ├── static.py               # Static auth — env var token
 │       ├── dynamic.py              # Dynamic auth — per-request tokens
-│       └── oauth.py                # OAuth — browser flow + token caching
-├── config.py                       # Models, database, memory manager
-├── cli.py                          # CLI entry point
+│       └── oauth.py                # OAuth — browser flow + refresh tokens + caching
+├── config.py                       # Models, database, Learning Machine
+├── cli.py                          # CLI entry point (uses Agno's built-in acli_app)
 ├── main.py                         # AgentOS server
 ├── pyproject.toml
 └── .env                            # API keys (not committed)
@@ -126,6 +132,8 @@ pepeclaw chat coding
 pepeclaw chat fullstack
 pepeclaw chat stripe --user-id me
 pepeclaw chat fullstack --session <id>  # Resume a previous session
+pepeclaw chat coding --no-stream        # Disable streaming
+pepeclaw chat coding --no-markdown      # Disable markdown formatting
 
 # Manage chat sessions
 pepeclaw sessions list
@@ -133,19 +141,31 @@ pepeclaw sessions list --user-id me
 pepeclaw sessions clear <session-id>
 pepeclaw sessions clear --all
 
-# Manage OAuth tokens
-pepeclaw auth login expo
-pepeclaw auth login stripe
+# Manage authentication
+pepeclaw auth login expo       # OAuth browser flow
+pepeclaw auth login stripe     # OAuth browser flow
+pepeclaw auth login github     # GitHub CLI auth (gh auth login)
 pepeclaw auth status
 pepeclaw auth clear
 pepeclaw auth clear expo
 
 # Reset data
-pepeclaw reset --memory         # Clear agent memory database
+pepeclaw reset --learning       # Clear all learning data (profiles, memory, entities, decisions)
 pepeclaw reset --tokens         # Clear OAuth tokens
 pepeclaw reset --sessions       # Clear all chat sessions
 pepeclaw reset --generated      # Clear generated files
 pepeclaw reset --all            # Clear everything
+```
+
+## Teams
+
+```text
+fullstack
+├── code:     coding, python, shell, file, filegen, reasoning, learning, github
+├── docs:     agno, clerk, convex-auth, livekit, svelte
+├── deploy:   shell, docker, expo, convex
+├── payments: stripe, filegen
+└── research: learning, reasoning, calculator, agno
 ```
 
 ## Models
@@ -154,20 +174,58 @@ All models are configured in `config.py`. Change a role assignment once, and eve
 
 | Role | Model | Used by |
 | ---- | ----- | ------- |
-| `default_model` | Claude Sonnet 4.6 | All coding & MCP agents |
+| `default_model` | Claude Sonnet 4.6 | All coding and MCP agents |
 | `reasoning_model` | Claude Opus 4.6 | Reasoning Agent, all team leaders |
-| `fast_model` | GPT-5 Nano | Memory Manager |
+| `fast_model` | GPT-5 Nano | Learning Machine extraction (high volume, cheap) |
 | `image_model` | Gemini 2.5 Flash Image | File Generation Agent |
 
 Additional models available in config: Claude Haiku, GPT-5.4, GPT-5.4 Pro, GPT-5 Mini, GPT-5.3 Codex, GPT Image 1.5, o3, Gemini 3.1 Pro, Gemini 3 Flash (preview), Gemini 2.5 Flash, Gemini 2.5 Flash Lite.
 
-## Auth Tools
+## Learning Machine
 
-Three reusable tools for authenticating with MCP servers.
+All agents use Agno's Learning Machine for persistent, cross-session learning. When one agent learns something about a user or project, every other agent can access it.
+
+Configured in `config.py` with 6 stores:
+
+| Store | Purpose |
+| ----- | ------- |
+| `user_profile` | Structured user data (role, preferences, coding style) |
+| `user_memory` | Unstructured observations per user |
+| `session_context` | Goals, plans, and progress per session (planning enabled) |
+| `entity_memory` | Knowledge graph of project entities and relationships |
+| `learned_knowledge` | Reusable insights and patterns across all interactions |
+| `decision_log` | Technical decisions with rationale and outcomes |
+
+Extraction runs on `fast_model` (GPT-5 Nano) to keep costs low. Data persists in `tmp/pepeclaw.db`.
+
+## Auth Methods
+
+Three approaches for authenticating with MCP servers, plus GitHub CLI auth.
+
+### OAuth (Expo, Stripe)
+
+Browser-based OAuth 2.0 flow with file-based token caching at `~/.pepeclaw/tokens/`. Supports automatic refresh tokens — Stripe tokens refresh silently without reopening the browser.
+
+```python
+from tools.auth import create_oauth_mcp_tools
+
+mcp_tools = create_oauth_mcp_tools(
+    url="https://mcp.expo.dev/mcp",
+    cache_key="expo",
+)
+```
+
+### GitHub CLI
+
+Piggybacks on existing `gh auth login` — no env var or OAuth flow needed.
+
+```bash
+pepeclaw auth login github
+```
 
 ### Static Auth
 
-One token from an env var, set at startup. Same token for every request.
+One token from an env var, set at startup.
 
 ```python
 from tools.auth import create_static_mcp_tools
@@ -195,30 +253,13 @@ mcp_tools = create_dynamic_mcp_tools(
 await agent.arun("do something", metadata={"api_token": "user-token"})
 ```
 
-Token priority: `metadata[key]` > env var > no auth header.
-
-### OAuth Auth
-
-Browser-based OAuth 2.0 flow with file-based token caching at `~/.pepeclaw/tokens/`.
-
-```python
-from tools.auth import create_oauth_mcp_tools
-
-mcp_tools = create_oauth_mcp_tools(
-    url="https://mcp.expo.dev/mcp",
-    cache_key="expo",
-)
-```
-
-## Shared Memory
-
-All agents share a SQLite database (`tmp/pepeclaw.db`) for memory persistence. When one agent learns something about a user, all other agents can access it. Configured via `config.py`.
-
 ## Dependencies
 
-- [agno](https://github.com/agno-agi/agno) — agent framework
+- [agno](https://github.com/agno-agi/agno) — agent framework with Learning Machine
 - [anthropic](https://github.com/anthropics/anthropic-sdk-python) — Claude models
 - [openai](https://github.com/openai/openai-python) — GPT models
 - [google-genai](https://github.com/googleapis/python-genai) — Gemini models (Vertex AI)
 - [mcp](https://github.com/modelcontextprotocol/python-sdk) — Model Context Protocol
 - [aiohttp](https://github.com/aio-libs/aiohttp) — OAuth callback server
+- [pygithub](https://github.com/PyGithub/PyGithub) — GitHub API
+- [docker](https://github.com/docker/docker-py) — Docker SDK

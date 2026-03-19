@@ -405,18 +405,18 @@ def sessions_clear(
 
 @app.command()
 def reset(
-    memory: bool = typer.Option(False, "--memory", "-m", help="Clear agent learning database."),
+    learning: bool = typer.Option(False, "--learning", "-l", help="Clear all learning data (profiles, memory, entities, decisions)."),
     tokens: bool = typer.Option(False, "--tokens", "-t", help="Clear cached OAuth tokens."),
     sessions: bool = typer.Option(False, "--sessions", "-s", help="Clear all chat sessions."),
     generated: bool = typer.Option(False, "--generated", "-g", help="Clear generated files."),
     all_: bool = typer.Option(False, "--all", "-a", help="Clear everything."),
 ):
     """Clear learning data, tokens, sessions, and/or generated files."""
-    if not any([memory, tokens, sessions, generated, all_]):
-        console.print("[yellow]Specify what to reset: --memory, --tokens, --sessions, --generated, or --all[/yellow]")
+    if not any([learning, tokens, sessions, generated, all_]):
+        console.print("[yellow]Specify what to reset: --learning, --tokens, --sessions, --generated, or --all[/yellow]")
         raise typer.Exit(1)
 
-    if all_ or memory:
+    if all_ or learning:
         db_path = Path("tmp/pepeclaw.db")
         if db_path.exists():
             db_path.unlink()
@@ -424,7 +424,7 @@ def reset(
         else:
             console.print("[yellow]No learning database found.[/yellow]")
 
-    if (all_ or sessions) and not (all_ and memory):
+    if (all_ or sessions) and not (all_ and learning):
         # Only clear sessions separately if we didn't already delete the whole DB
         from agno.db.base import SessionType
         from config import db
