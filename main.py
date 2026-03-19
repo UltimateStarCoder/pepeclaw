@@ -7,6 +7,9 @@ from agents.coding_agents.python_agent import python_agent
 from agents.coding_agents.reasoning_agent import reasoning_agent
 from agents.coding_agents.learning_agent import learning_agent
 from agents.coding_agents.shell_agent import shell_agent
+from agents.coding_agents.github_agent import github_agent
+from agents.coding_agents.calculator_agent import calculator_agent
+from agents.coding_agents.docker_agent import docker_agent
 from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
 from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
 from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
@@ -32,6 +35,9 @@ agent_os = AgentOS(
         filegen_agent,
         reasoning_agent,
         learning_agent,
+        github_agent,
+        calculator_agent,
+        docker_agent,
         # MCP agents
         agno_mcp_agents,
         clerk_mcp_agents,
