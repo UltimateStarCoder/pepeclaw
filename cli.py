@@ -230,26 +230,46 @@ def chat(
 
 @auth_app.command(name="login")
 def auth_login(
-    service: str = typer.Argument(help="Service to authenticate with (e.g., 'expo', 'stripe')."),
+    service: str = typer.Argument(help="Service to authenticate with (e.g., 'expo', 'stripe', 'github')."),
 ):
-    """Authenticate with an OAuth-protected MCP service."""
-    from tools.auth.oauth import get_oauth_token
+    """Authenticate with an OAuth-protected MCP service or GitHub CLI."""
+    import subprocess
 
-    urls = {
+    oauth_urls = {
         "expo": "https://mcp.expo.dev/mcp",
         "stripe": "https://mcp.stripe.com",
     }
 
-    if service not in urls:
+    cli_services = {"github"}
+
+    all_services = set(oauth_urls) | cli_services
+    if service not in all_services:
         console.print(f"[red]Unknown service: '{service}'[/red]")
-        console.print(f"Available: {', '.join(urls)}")
+        console.print(f"Available: {', '.join(sorted(all_services))}")
         raise typer.Exit(1)
+
+    if service == "github":
+        console.print("\n[bold]Authenticating with GitHub via gh CLI...[/bold]\n")
+        try:
+            result = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True)
+            if result.returncode == 0:
+                console.print("[green]Already authenticated with GitHub.[/green]")
+                console.print(f"[dim]{result.stdout.strip()}[/dim]\n")
+            else:
+                subprocess.run(["gh", "auth", "login"], check=True)
+                console.print("\n[green]Authenticated with GitHub.[/green]\n")
+        except FileNotFoundError:
+            console.print("[red]gh CLI not found. Install it: https://cli.github.com[/red]")
+            raise typer.Exit(1)
+        return
+
+    from tools.auth.oauth import get_oauth_token
 
     console.print(f"\n[bold]Authenticating with {service}...[/bold]\n")
 
     token = asyncio.run(
         get_oauth_token(
-            server_url=urls[service],
+            server_url=oauth_urls[service],
             cache_key=service,
             client_name="Pepeclaw",
             force_refresh=True,

@@ -19,6 +19,13 @@ def _get_gh_token() -> str:
     return ""
 
 
+_gh_token = _get_gh_token()
+
+try:
+    github_tools = GithubTools(access_token=_gh_token) if _gh_token else None
+except (ValueError, Exception):
+    github_tools = None
+
 github_agent = Agent(
     id="github-agent",
     name="GitHub Agent",
@@ -27,8 +34,9 @@ github_agent = Agent(
         "You are a GitHub assistant. Manage repositories, issues, pull requests, and branches.",
         "When creating issues or PRs, write clear titles and descriptions.",
         "When reviewing PRs, examine the changes and provide constructive feedback.",
+        "If GitHub tools are unavailable, tell the user to run: pepeclaw auth login github",
     ],
-    tools=[GithubTools(access_token=_get_gh_token())],
+    tools=[github_tools] if github_tools else [],
     db=db,
     learning=learning_machine,
     add_history_to_context=True,
