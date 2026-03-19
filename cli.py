@@ -34,6 +34,7 @@ AGENTS = {
     "agno": "agents.mcp_agents.agno_mcp_agents:agno_mcp_agents",
     "clerk": "agents.mcp_agents.clerk_mcp_agents:clerk_mcp_agents",
     "convex": "agents.mcp_agents.convex_mcp_agents:convex_mcp_agents",
+    "convex-auth": "agents.mcp_agents.convex_auth_mcp_agents:convex_auth_mcp_agents",
     "expo": "agents.mcp_agents.expo_mcp_agents:expo_mcp_agents",
     "livekit": "agents.mcp_agents.livekit_mcp_agents:livekit_mcp_agents",
     "svelte": "agents.mcp_agents.svelte_mcp_agents:svelte_mcp_agents",

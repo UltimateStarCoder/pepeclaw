@@ -9,6 +9,7 @@ from agents.coding_agents.shell_agent import shell_agent
 from agents.mcp_agents.agno_mcp_agents import agno_mcp_agents
 from agents.mcp_agents.clerk_mcp_agents import clerk_mcp_agents
 from agents.mcp_agents.convex_mcp_agents import convex_mcp_agents
+from agents.mcp_agents.convex_auth_mcp_agents import convex_auth_mcp_agents
 from agents.mcp_agents.expo_mcp_agents import expo_mcp_agents
 from agents.mcp_agents.livekit_mcp_agents import livekit_mcp_agents
 from agents.mcp_agents.svelte_mcp_agents import svelte_mcp_agents
@@ -32,6 +33,7 @@ agent_os = AgentOS(
         agno_mcp_agents,
         clerk_mcp_agents,
         convex_mcp_agents,
+        convex_auth_mcp_agents,
         expo_mcp_agents,
         livekit_mcp_agents,
         svelte_mcp_agents,
